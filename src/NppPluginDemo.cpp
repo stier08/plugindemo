@@ -25,16 +25,61 @@ extern bool doCloseTag;
 
 extern DemoDlg _goToLine;
 
+CAppModule _appModule;
+
+void wtl_atl_initialize()
+{
+
+
+		// If you are running on NT 4.0 or higher you can use the following call instead to 
+		// make the EXE free threaded. This means that calls come in on a random RPC thread.
+		//	HRESULT hRes = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
+		//HRESULT hRes = ::CoInitialize(NULL);
+		//HRESULT hRes = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
+		// We now use OleInitialize so that we can use IDropTarget for the projects view 
+		// (and maybe other stuff later).
+		HRESULT hRes = ::OleInitialize(NULL);
+		ATLASSERT(SUCCEEDED(hRes));
+
+#ifdef _DEBUG
+		//_CrtSetBreakAlloc(5371);
+#endif
+
+#if (_WIN32_IE >= 0x0300)
+		INITCOMMONCONTROLSEX iccx;
+		iccx.dwSize = sizeof(iccx);
+		iccx.dwICC = ICC_COOL_CLASSES | ICC_BAR_CLASSES | ICC_USEREX_CLASSES;
+		BOOL bRet = ::InitCommonControlsEx(&iccx);
+		bRet;
+		ATLASSERT(bRet);
+#else
+		::InitCommonControls();
+#endif
+
+		HINSTANCE hInstance = GetModuleHandle(NULL);
+
+		hRes = _appModule.Init(NULL, hInstance);
+		ATLASSERT(SUCCEEDED(hRes));
+}
+
+void wtl_atl_deinitialize()
+{
+	_appModule.Term();
+	::CoUninitialize();
+}
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD  reasonForCall, LPVOID /*lpReserved*/)
 {
     switch (reasonForCall)
     {
       case DLL_PROCESS_ATTACH:
         pluginInit(hModule);
+		wtl_atl_initialize();
         break;
 
       case DLL_PROCESS_DETACH:
         pluginCleanUp();
+		wtl_atl_deinitialize();
         break;
 
       case DLL_THREAD_ATTACH:

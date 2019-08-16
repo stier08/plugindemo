@@ -18,6 +18,19 @@
 #include <stdio.h>
 #include "StaticDialog.h"
 
+#include <atlbase.h>
+#include <atlapp.h>
+#include <atlmisc.h>
+#include <atlddx.h>
+
+#include <atlctrls.h>
+#include <atldlgs.h>
+#include <atlframe.h>
+#include <atlctrlw.h>
+#include <atlctrlx.h>
+#include <atltheme.h>
+
+
 void StaticDialog::goToCenter()
 {
 	RECT rc;
@@ -64,8 +77,9 @@ HGLOBAL StaticDialog::makeRTLResource(int dialogID, DLGTEMPLATE **ppMyDlgTemplat
 	return hMyDlgTemplate;
 }
 
-void StaticDialog::create(int dialogID, bool isRTL)
+void StaticDialog::create(int /*dialogID*/, bool /*isRTL*/)
 {
+	/*
 	if (isRTL)
 	{
 		DLGTEMPLATE *pMyDlgTemplate = NULL;
@@ -84,9 +98,14 @@ void StaticDialog::create(int dialogID, bool isRTL)
 		::MessageBoxA(NULL, errMsg, "In StaticDialog::create()", MB_OK);
 		return;
 	}
+	*/
+	CRect rc = _rc;
+	m_treeView.Create(_hParent, rc, _T("ScriptsList"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | TVS_DISABLEDRAGDROP | TVS_HASLINES | TVS_LINESATROOT, 0, 100);
+	m_treeView.ShowWindow(SW_SHOW);
+	m_treeView.SetWindowTheme(L"explorer", NULL);
 
 	// if the destination of message NPPM_MODELESSDIALOG is not its parent, then it's the grand-parent
-	::SendMessage(_hParent, NPPM_MODELESSDIALOG, MODELESSDIALOGADD, reinterpret_cast<WPARAM>(_hSelf));
+	//::SendMessage(_hParent, NPPM_MODELESSDIALOG, MODELESSDIALOGADD, reinterpret_cast<WPARAM>(_hSelf));
 }
 
 INT_PTR CALLBACK StaticDialog::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

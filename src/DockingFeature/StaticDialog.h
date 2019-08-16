@@ -22,6 +22,16 @@
 
 enum class PosAlign { left, right, top, bottom };
 
+#include <atlbase.h>
+ #include <atlapp.h>
+ #include <atlctrls.h>
+ #include <atltheme.h>
+
+class CThemedTree : public CTreeViewCtrl, public CThemeImpl<CThemedTree>
+{
+};
+
+/*
 struct DLGTEMPLATEEX {
       WORD   dlgVer;
       WORD   signature;
@@ -35,7 +45,7 @@ struct DLGTEMPLATEEX {
       short  cy;
       // The structure has more fields but are variable length
 } ;
-
+*/
 class StaticDialog : public Window
 {
 public :
@@ -65,5 +75,7 @@ protected :
 
     void alignWith(HWND handle, HWND handle2Align, PosAlign pos, POINT & point);
 	HGLOBAL makeRTLResource(int dialogID, DLGTEMPLATE **ppMyDlgTemplate);
+private:
+	CThemedTree m_treeView;
 };
 
