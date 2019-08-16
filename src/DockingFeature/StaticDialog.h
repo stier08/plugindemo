@@ -20,6 +20,16 @@
 #include "Window.h"
 #include "..\Notepad_plus_msgs.h"
 
+#include <atlbase.h>
+#include <atlapp.h>
+#include <atlctrls.h>
+#include <atltheme.h>
+
+class CThemedTree : public CTreeViewCtrl, public CThemeImpl<CThemedTree>
+{
+};
+
+
 enum class PosAlign { left, right, top, bottom };
 
 struct DLGTEMPLATEEX {
@@ -65,5 +75,7 @@ protected :
 
     void alignWith(HWND handle, HWND handle2Align, PosAlign pos, POINT & point);
 	HGLOBAL makeRTLResource(int dialogID, DLGTEMPLATE **ppMyDlgTemplate);
+private:
+	CThemedTree m_tree;
 };
 

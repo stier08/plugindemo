@@ -18,6 +18,10 @@
 #include <stdio.h>
 #include "StaticDialog.h"
 
+#include <atltypes.h>
+#include <atlwin.h>
+
+
 void StaticDialog::goToCenter()
 {
 	RECT rc;
@@ -87,6 +91,12 @@ void StaticDialog::create(int dialogID, bool isRTL)
 
 	// if the destination of message NPPM_MODELESSDIALOG is not its parent, then it's the grand-parent
 	::SendMessage(_hParent, NPPM_MODELESSDIALOG, MODELESSDIALOGADD, reinterpret_cast<WPARAM>(_hSelf));
+
+	CRect rc = _rc;
+
+	m_tree.Create(_hParent, rc, _T("ScriptsList"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | TVS_DISABLEDRAGDROP | TVS_HASLINES | TVS_LINESATROOT, 0, 100);
+	m_tree.ShowWindow(SW_SHOW);
+	m_tree.SetWindowTheme(L"explorer", NULL);
 }
 
 INT_PTR CALLBACK StaticDialog::dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
